@@ -1,8 +1,14 @@
-
-import { Button,Container,Nav,Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Button, Container, Nav, Navbar, Dropdown } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
 
 function CollapsibleExample() {
+  const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem("user-info"));
+  console.warn(user);
+  function logout() {
+    localStorage.clear();
+    navigate("/signup");
+  }
   return (
     <Navbar collapseOnSelect expand="lg" className="bg-body-tertiary">
       <Container>
@@ -10,14 +16,40 @@ function CollapsibleExample() {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Link to="/" className="me-auto">Home</Link>
-            <Link to="/add" className="me-auto">Add Product</Link>
-            <Link to="/update" className="me-auto">Update Product</Link>
+            {localStorage.getItem("user-info") ? (
+              <>
+                <Link to="/add" className="me-auto">
+                  Add Product
+                </Link>
+                <Link to="/update" className="me-auto">
+                  Update Product
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/login" className="me-auto">
+                  Login
+                </Link>
+                <Link to="/signup" className="me-auto">
+                  {" "}
+                  SignUp{" "}
+                </Link>
+              </>
+            )}
           </Nav>
-          <Nav className="lsbtn">
-          <Button variant="outline-primary"  size="sm"><Link to="/login" className="me-auto">Login</Link></Button>  
-          <Button variant="outline-success"><Link to="/signup" className="me-auto"> SignUp </Link></Button>  
-          </Nav>
+          { (localStorage.getItem('user-info')) ?
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              {user && user.name}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu>
+              <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
+              <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+: null
+            }
         </Navbar.Collapse>
       </Container>
     </Navbar>
